@@ -7,9 +7,10 @@ const PORT = 5000;
 
 app.use(bodyParser.json());
 
+
 const users = [
-  { id: 1, username: "JohnDoe", email: "john@example.com", password: "mypassword123" },
-  { id: 2, username: "JaneSmith", email: "jane@example.com", password: "securepass456" }
+  { id: 1, username: "JohnDoe", email: "john@example.com", password: "mypassword123", dob: "1995-06-15" },
+  { id: 2, username: "JaneSmith", email: "jane@example.com", password: "securepass456", dob: "1998-09-22" }
 ];
 
 
@@ -19,7 +20,7 @@ app.get("/users", (req, res) => {
 
 
 app.post("/signup", (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, dob } = req.body;
 
 
   if (!username) {
@@ -33,16 +34,18 @@ app.post("/signup", (req, res) => {
       error: "Password length should be greater than 8 or less than or equal to 16",
     });
   }
+  if (!dob) {
+    return res.status(400).json({ error: "Date of Birth cannot be empty" });
+  }
 
-
-  const newUser = { id: users.length + 1, username, email, password };
+  const newUser = { id: users.length + 1, username, email, password, dob };
   users.push(newUser);
   console.log("New user created:", newUser);
 
   res.status(201).json({ message: "Signup successful", user: newUser });
 });
 
-
+// Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
