@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Sanjeev-Chakaravarthy/backend-ca-2#readme",
   "dependencies": {
+    "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "mongoose": "^8.10.2"
   }

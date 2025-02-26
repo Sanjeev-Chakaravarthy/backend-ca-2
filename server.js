@@ -1,34 +1,48 @@
-const express = require('express')
-const app = express()
+const express = require("express");
+const bodyParser = require("body-parser");
 
-app.use(express.json())
+const app = express();
+const PORT = 5000;
 
-app.get('/', (req,res) => {
-try {
-    res.status(200).send("email: admin@123.com | password: 12345678")
-} catch (error) {
-    return res.status(500).json({error: error.message})
-}
-})
 
-app.post('/login', (req,res) => {
-   try {
-    const {email, password}= req.body
-    if(!email){
-        return res.status(404).json({error: "Email Cannot be Empty"})
-    }
-    if(!password){
-        return res.status(404).json({error: "password Cannot be Empty"})
-    }
-    if (email == "admin@123.com" && password == "12345678"){
-        return res.status(200).json({message :"Admin Logged In Sucessfully"})
-    }
-    else{
-        return res.status(400).json({message: "Invalid Credentials"})
-    }
-   } catch (error) {
-    return res.status(500).json({error: error.message})
-   }
-} )
+app.use(bodyParser.json());
 
-app.listen(3000, ()=> console.log("Server is Running on the port http://localhost:3000"))
+const users = [
+  { id: 1, username: "JohnDoe", email: "john@example.com", password: "mypassword123" },
+  { id: 2, username: "JaneSmith", email: "jane@example.com", password: "securepass456" }
+];
+
+
+app.get("/users", (req, res) => {
+  res.status(200).json({ message: "Users retrieved successfully", users });
+});
+
+
+app.post("/signup", (req, res) => {
+  const { username, email, password } = req.body;
+
+
+  if (!username) {
+    return res.status(400).json({ error: "Username cannot be empty" });
+  }
+  if (!email) {
+    return res.status(400).json({ error: "Email cannot be empty" });
+  }
+  if (!password || password.length < 8 || password.length > 16) {
+    return res.status(400).json({
+      error: "Password length should be greater than 8 or less than or equal to 16",
+    });
+  }
+
+
+  const newUser = { id: users.length + 1, username, email, password };
+  users.push(newUser);
+  console.log("New user created:", newUser);
+
+  res.status(201).json({ message: "Signup successful", user: newUser });
+});
+
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
